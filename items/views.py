@@ -6,6 +6,7 @@ from django.http import JsonResponse
 
 # Create your views here.
 def item_list(request):
+    favorite_list=[]
     items = Item.objects.all()
     query = request.GET.get('q')
     if query:
@@ -64,14 +65,14 @@ def item_favorite(request, item_id):
     item_object = Item.objects.get(id=item_id)
     if request.user.is_anonymous:
         return redirent('user-login')
-    
+
     favorite, created = FavoriteItem.objects.get_or_create(user=request.user, item=item_object)
     if created:
         action = "favorite"
     else:
         favorite.delete()
         action="unfavorite"
-    
+
     response = {
         "action": action,
     }
